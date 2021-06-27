@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('assert');
+const { remote } = require('webdriverio');
+const { WebdriverAjax } = require('../../index');
 
 describe('webdriverajax', function testSuite() {
   this.timeout(process.env.CI ? 100000 : 10000);
@@ -15,6 +17,24 @@ describe('webdriverajax', function testSuite() {
       return window.__webdriverajax;
     });
     assert.deepEqual(ret, { requests: [] });
+  });
+
+  it('sets up the interceptor in standalone mode', async () => {
+    const browser = await remote({
+      port: 9515,
+      path: '/',
+      capabilities: {
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+          args: ['--headless'],
+        },
+      },
+    });
+
+    const webdriverAjax = new WebdriverAjax();
+    webdriverAjax.before(null, null, browser);
+
+    assert.equal(typeof browser.setupInterceptor, 'function');
   });
 
   it('should reset expectations', () => {

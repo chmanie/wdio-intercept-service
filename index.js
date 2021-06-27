@@ -15,7 +15,7 @@ class WebdriverAjax {
     this._wdajaxExpectations = [];
   }
 
-  before() {
+  before(config, capabilities, browser) {
     /**
      * instance need to have addCommand method
      */
@@ -306,3 +306,4 @@ class WebdriverAjax {
 }
 
 exports.default = WebdriverAjax;
+exports.WebdriverAjax = WebdriverAjax;

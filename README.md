@@ -25,6 +25,8 @@ npm install wdio-intercept-service -D
 
 ## Usage
 
+### Usage with WebDriver CLI
+
 It should be as easy as adding wdio-intercept-service to your `wdio.conf.js`:
 
 ```javascript
@@ -36,6 +38,43 @@ exports.config = {
 ```
 
 and you're all set.
+
+### Usage with WebDriver Standalone
+
+When using WebdriverIO Standalone, the `before` and `beforeTest` / `beforeScenario` functions need to be called manually.
+
+```javascript
+import { remote } from 'webdriverio';
+import { WebdriverAjax } from 'wdio-intercept-service-main'
+
+const WDIO_OPTIONS = {
+  port: 9515,
+  path: '/',
+  capabilities: {
+    browserName: 'chrome'
+  },
+}
+
+let browser;
+const interceptServiceLauncher = WebdriverAjax();
+
+beforeAll(async () => {
+  browser = await remote(WDIO_OPTIONS)
+  interceptServiceLauncher.before(null, null, browser)
+})
+
+beforeEach(async () => {
+  interceptServiceLauncher.beforeTest()
+})
+
+afterAll(async () => {
+  await client.deleteSession()
+});
+
+describe('', async () => {
+  ... // See example usage
+});
+```
 
 Once initialized, some related functions are added to your browser command chain (see [API](#api)).
 
